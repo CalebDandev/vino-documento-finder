@@ -1,5 +1,5 @@
 
-import { FileText, FileSpreadsheet, File, Download, Calendar, Clock } from "lucide-react";
+import { FileText, FileSpreadsheet, File, ExternalLink, Calendar, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -122,8 +122,8 @@ const SearchResults = ({ results, query, isLoading }: SearchResultsProps) => {
                   size="sm"
                   className="ml-4 border-wine-pale hover:bg-wine-pale flex-shrink-0"
                 >
-                  <Download className="w-4 h-4 mr-2" />
-                  Descargar
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Abrir
                 </Button>
               </div>
               

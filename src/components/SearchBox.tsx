@@ -36,7 +36,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
           <span className="font-normal">FIIS</span><span className="text-wine-medium">plorer</span>
         </h1>
         <p className="text-lg text-muted-foreground">
-          Encuentra documentos de la Facultad de Ingeniería de Sistemas, Software e Industrial
+          La manera más inteligente de encontrar tu documentos, solo escribe, y listo, todo a tu alcance
         </p>
       </div>
 
