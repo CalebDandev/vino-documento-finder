@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,15 +17,6 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
     fileType: "",
     dateRange: { from: "", to: "" }
   });
-
-  // Búsqueda en tiempo real
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      onSearch(query, filters);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [query, filters, onSearch]);
 
   const handleSearch = () => {
     onSearch(query, filters);
