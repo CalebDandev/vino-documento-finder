@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,10 +18,17 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
     dateRange: { from: "", to: "" }
   });
 
-  const handleSearch = () => {
-    if (query.trim()) {
+  // Búsqueda en tiempo real
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
       onSearch(query, filters);
-    }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [query, filters, onSearch]);
+
+  const handleSearch = () => {
+    onSearch(query, filters);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -31,42 +38,56 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4 animate-fade-in">
-      <Card className="p-6 bg-white/80 backdrop-blur-sm border-wine-pale shadow-lg">
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2">
+    <div className="w-full max-w-4xl mx-auto space-y-6 animate-fade-in">
+      {/* Logo Principal FIISplorer */}
+      <div className="text-center py-8">
+        <h1 className="text-6xl font-light text-primary mb-4 tracking-wide">
+          <span className="font-normal">FIIS</span><span className="text-wine-medium">plorer</span>
+        </h1>
+        <p className="text-lg text-muted-foreground">
+          Encuentra documentos de la Facultad de Ingeniería de Sistemas, Software e Industrial
+        </p>
+      </div>
+
+      {/* Caja de búsqueda moderna estilo Bing */}
+      <div className="relative">
+        <div className="bg-white rounded-full shadow-lg border border-wine-pale hover:shadow-xl transition-shadow duration-300 p-2">
+          <div className="flex items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 type="text"
-                placeholder="Buscar documentos administrativos..."
+                placeholder="Buscar documentos académicos..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="pl-12 pr-4 py-3 text-lg border-wine-pale focus:ring-primary focus:border-primary"
+                className="pl-14 pr-4 py-4 text-lg border-0 rounded-full focus:ring-0 focus:outline-none bg-transparent placeholder:text-muted-foreground"
               />
             </div>
-            <Button
-              onClick={() => setShowFilters(!showFilters)}
-              variant="outline"
-              className="p-3 border-wine-pale hover:bg-wine-pale"
-            >
-              <Filter className="w-5 h-5" />
-            </Button>
-            <Button
-              onClick={handleSearch}
-              className="px-8 py-3 bg-primary hover:bg-wine-medium transition-colors duration-200"
-              disabled={!query.trim()}
-            >
-              Buscar
-            </Button>
+            <div className="flex items-center space-x-2 pr-2">
+              <Button
+                onClick={() => setShowFilters(!showFilters)}
+                variant="ghost"
+                className="p-3 rounded-full hover:bg-wine-pale"
+              >
+                <Filter className="w-5 h-5" />
+              </Button>
+              <Button
+                onClick={handleSearch}
+                className="px-8 py-3 bg-primary hover:bg-wine-medium transition-colors duration-200 rounded-full"
+              >
+                Buscar
+              </Button>
+            </div>
           </div>
-
-          {showFilters && (
-            <SearchFilters filters={filters} onFiltersChange={setFilters} />
-          )}
         </div>
-      </Card>
+
+        {showFilters && (
+          <div className="mt-4">
+            <SearchFilters filters={filters} onFiltersChange={setFilters} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -16,7 +16,7 @@ const SearchHeader = ({ onUploadClick }: SearchHeaderProps) => {
               <Search className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-primary">DocSearch</h1>
+              <h1 className="text-xl font-bold text-primary">FIISplorer</h1>
               <p className="text-sm text-muted-foreground">Motor de Búsqueda Académica</p>
             </div>
           </div>

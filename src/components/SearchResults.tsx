@@ -86,10 +86,16 @@ const SearchResults = ({ results, query, isLoading }: SearchResultsProps) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4 animate-fade-in">
-      {query && (
+      {query ? (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             Se encontraron {results.length} documentos para "{query}"
+          </p>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            Mostrando {results.length} documentos disponibles
           </p>
         </div>
       )}
