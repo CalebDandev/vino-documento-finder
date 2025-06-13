@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileText, FileSpreadsheet, File, ExternalLink, Calendar, Clock } from "lucide-react";
+import { FileText, FileSpreadsheet, File, ExternalLink, Calendar, Clock, Upload } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ interface Document {
   lastModified: string;
   content: string;
   url: string;
+  isUploaded?: boolean;
 }
 
 interface SearchResultsProps {
@@ -123,9 +124,17 @@ const SearchResults = ({ results, query, isLoading }: SearchResultsProps) => {
                   <div className="flex items-start space-x-3 flex-1">
                     <FileIcon className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-primary hover:text-wine-medium cursor-pointer truncate">
-                        {doc.title}
-                      </h3>
+                      <div className="flex items-center space-x-2">
+                        <h3 className="text-lg font-medium text-primary hover:text-wine-medium cursor-pointer truncate">
+                          {doc.title}
+                        </h3>
+                        {doc.isUploaded && (
+                          <Badge className="bg-green-100 text-green-800 text-xs flex items-center space-x-1">
+                            <Upload className="w-3 h-3" />
+                            <span>Subido</span>
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                         {doc.content}
                       </p>

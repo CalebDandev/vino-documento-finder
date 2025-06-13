@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { Upload, X, FileText, FileSpreadsheet, File, CheckCircle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 interface DocumentUploadProps {
   isOpen: boolean;
   onClose: () => void;
+  onFilesUploaded?: (files: File[]) => void;
 }
 
 interface UploadFile {
@@ -20,7 +20,7 @@ interface UploadFile {
   error?: string;
 }
 
-const DocumentUpload = ({ isOpen, onClose }: DocumentUploadProps) => {
+const DocumentUpload = ({ isOpen, onClose, onFilesUploaded }: DocumentUploadProps) => {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const { toast } = useToast();
@@ -117,23 +117,31 @@ const DocumentUpload = ({ isOpen, onClose }: DocumentUploadProps) => {
         ));
       }
 
-      // Simular resultado del upload
-      const success = Math.random() > 0.2; // 80% success rate
+      // Simular resultado del upload (siempre exitoso para demostración)
       setFiles(prev => prev.map(f => 
         f.id === uploadFile.id 
-          ? { 
-              ...f, 
-              status: success ? 'success' : 'error',
-              error: success ? undefined : 'Error al procesar el documento'
-            }
+          ? { ...f, status: 'success' }
           : f
       ));
     }
 
+    // Notificar archivos subidos exitosamente
+    const successfulFiles = files.filter(f => f.status === 'success' || pendingFiles.some(p => p.id === f.id));
+    const actualFiles = successfulFiles.map(f => f.file);
+    
+    if (onFilesUploaded && actualFiles.length > 0) {
+      onFilesUploaded(actualFiles);
+    }
+
     toast({
       title: "Carga completada",
-      description: "Los documentos han sido procesados y están listos para búsqueda.",
+      description: "Los documentos han sido procesados y están disponibles para búsqueda.",
     });
+
+    // Limpiar archivos después de un breve delay
+    setTimeout(() => {
+      setFiles([]);
+    }, 2000);
   };
 
   const getStatusIcon = (status: string) => {
