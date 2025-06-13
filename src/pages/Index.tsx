@@ -31,7 +31,7 @@ const mockDocuments = [
     type: "txt",
     size: "456 KB",
     lastModified: "8 de enero, 2024",
-    content: "Guía detallada de los procedimientos para inscripción de materias, requisitos y fechas importantes...",
+    content: "Guía detallada de los procedimientos para inscripción de materias, requisitos y fechas importantes. Los estudiantes deben seguir estos pasos: 1. Verificar prerrequisitos, 2. Consultar horarios disponibles, 3. Realizar la inscripción en línea, 4. Confirmar la inscripción...",
     url: "/documents/procedimientos-inscripcion.txt"
   },
   {
@@ -46,11 +46,11 @@ const mockDocuments = [
   {
     id: "5",
     title: "Manual de Laboratorio de Programación",
-    type: "docx",
-    size: "1.9 MB",
+    type: "pdf",
+    size: "4.2 MB",
     lastModified: "5 de noviembre, 2023",
     content: "Manual completo para las prácticas de laboratorio de programación, incluyendo ejercicios y proyectos...",
-    url: "/documents/manual-laboratorio.docx"
+    url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
   },
   {
     id: "6",
@@ -60,6 +60,15 @@ const mockDocuments = [
     lastModified: "20 de enero, 2024",
     content: "Horarios completos de todas las materias para el primer semestre del año 2024...",
     url: "/documents/horarios-2024-i.xlsx"
+  },
+  {
+    id: "7",
+    title: "Guía de Tesis de Grado",
+    type: "pdf",
+    size: "1.8 MB",
+    lastModified: "3 de octubre, 2023",
+    content: "Documento que establece los lineamientos y requisitos para la elaboración y presentación de tesis de grado...",
+    url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
   }
 ];
 

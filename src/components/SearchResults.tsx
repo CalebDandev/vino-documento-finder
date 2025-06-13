@@ -1,8 +1,9 @@
-
+import { useState } from "react";
 import { FileText, FileSpreadsheet, File, ExternalLink, Calendar, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import DocumentViewer from "./DocumentViewer";
 
 interface Document {
   id: string;
@@ -21,6 +22,9 @@ interface SearchResultsProps {
 }
 
 const SearchResults = ({ results, query, isLoading }: SearchResultsProps) => {
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+
   const getFileIcon = (type: string) => {
     switch (type.toLowerCase()) {
       case 'docx':
@@ -31,6 +35,8 @@ const SearchResults = ({ results, query, isLoading }: SearchResultsProps) => {
         return FileSpreadsheet;
       case 'txt':
         return File;
+      case 'pdf':
+        return FileText;
       default:
         return File;
     }
@@ -46,9 +52,16 @@ const SearchResults = ({ results, query, isLoading }: SearchResultsProps) => {
         return 'bg-green-100 text-green-800';
       case 'txt':
         return 'bg-gray-100 text-gray-800';
+      case 'pdf':
+        return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const handleOpenDocument = (document: Document) => {
+    setSelectedDocument(document);
+    setIsViewerOpen(true);
   };
 
   if (isLoading) {
@@ -85,66 +98,75 @@ const SearchResults = ({ results, query, isLoading }: SearchResultsProps) => {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4 animate-fade-in">
-      {query ? (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Se encontraron {results.length} documentos para "{query}"
-          </p>
-        </div>
-      ) : (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Mostrando {results.length} documentos disponibles
-          </p>
-        </div>
-      )}
-      
-      {results.map((doc) => {
-        const FileIcon = getFileIcon(doc.type);
-        return (
-          <Card key={doc.id} className="p-6 hover:shadow-md transition-shadow duration-200">
-            <div className="space-y-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3 flex-1">
-                  <FileIcon className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-medium text-primary hover:text-wine-medium cursor-pointer truncate">
-                      {doc.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                      {doc.content}
-                    </p>
+    <>
+      <div className="w-full max-w-4xl mx-auto space-y-4 animate-fade-in">
+        {query ? (
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Se encontraron {results.length} documentos para "{query}"
+            </p>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Mostrando {results.length} documentos disponibles
+            </p>
+          </div>
+        )}
+        
+        {results.map((doc) => {
+          const FileIcon = getFileIcon(doc.type);
+          return (
+            <Card key={doc.id} className="p-6 hover:shadow-md transition-shadow duration-200">
+              <div className="space-y-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-3 flex-1">
+                    <FileIcon className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-medium text-primary hover:text-wine-medium cursor-pointer truncate">
+                        {doc.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                        {doc.content}
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="ml-4 border-wine-pale hover:bg-wine-pale flex-shrink-0"
+                    onClick={() => handleOpenDocument(doc)}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Abrir
+                  </Button>
+                </div>
+                
+                <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                  <Badge className={getFileTypeColor(doc.type)}>
+                    {doc.type.toUpperCase()}
+                  </Badge>
+                  <div className="flex items-center space-x-1">
+                    <Calendar className="w-3 h-3" />
+                    <span>{doc.lastModified}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <File className="w-3 h-3" />
+                    <span>{doc.size}</span>
                   </div>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="ml-4 border-wine-pale hover:bg-wine-pale flex-shrink-0"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Abrir
-                </Button>
               </div>
-              
-              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                <Badge className={getFileTypeColor(doc.type)}>
-                  {doc.type.toUpperCase()}
-                </Badge>
-                <div className="flex items-center space-x-1">
-                  <Calendar className="w-3 h-3" />
-                  <span>{doc.lastModified}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <File className="w-3 h-3" />
-                  <span>{doc.size}</span>
-                </div>
-              </div>
-            </div>
-          </Card>
-        );
-      })}
-    </div>
+            </Card>
+          );
+        })}
+      </div>
+
+      <DocumentViewer
+        isOpen={isViewerOpen}
+        onClose={() => setIsViewerOpen(false)}
+        document={selectedDocument}
+      />
+    </>
   );
 };
 

@@ -25,13 +25,17 @@ const DocumentUpload = ({ isOpen, onClose }: DocumentUploadProps) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const { toast } = useToast();
 
-  const acceptedTypes = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
-                        'text/plain'];
+  const acceptedTypes = [
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+    'text/plain',
+    'application/pdf'
+  ];
 
   const getFileIcon = (type: string) => {
     if (type.includes('word')) return FileText;
     if (type.includes('spreadsheet')) return FileSpreadsheet;
+    if (type.includes('pdf')) return FileText;
     return File;
   };
 
@@ -168,7 +172,7 @@ const DocumentUpload = ({ isOpen, onClose }: DocumentUploadProps) => {
                   Arrastra archivos aquí o selecciona
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Archivos permitidos: Word (.docx), Excel (.xlsx), Texto (.txt)
+                  Archivos permitidos: Word (.docx), Excel (.xlsx), PDF (.pdf), Texto (.txt)
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Tamaño máximo: 10MB por archivo
@@ -179,7 +183,7 @@ const DocumentUpload = ({ isOpen, onClose }: DocumentUploadProps) => {
                 <input
                   type="file"
                   multiple
-                  accept=".docx,.xlsx,.txt"
+                  accept=".docx,.xlsx,.txt,.pdf"
                   onChange={handleFileSelect}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
