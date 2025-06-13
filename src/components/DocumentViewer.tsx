@@ -28,11 +28,13 @@ interface DocumentViewerProps {
 const DocumentViewer = ({ isOpen, onClose, document }: DocumentViewerProps) => {
   const [numPages, setNumPages] = useState<number>();
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [scale, setScale] = useState<number>(1.2);
 
   if (!document) return null;
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
+    setPageNumber(1);
   };
 
   const getFileIcon = (type: string) => {
@@ -55,40 +57,67 @@ const DocumentViewer = ({ isOpen, onClose, document }: DocumentViewerProps) => {
       case 'pdf':
         return (
           <div className="flex flex-col items-center space-y-4">
-            <Document
-              file={document.url}
-              onLoadSuccess={onDocumentLoadSuccess}
-              className="max-w-full"
-            >
-              <Page 
-                pageNumber={pageNumber} 
-                className="max-w-full"
-                renderTextLayer={true}
-                renderAnnotationLayer={true}
-              />
-            </Document>
-            
-            {numPages && numPages > 1 && (
-              <div className="flex items-center space-x-4">
+            <div className="flex items-center justify-between w-full mb-4">
+              <div className="flex items-center space-x-2">
                 <Button 
                   variant="outline" 
-                  onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}
-                  disabled={pageNumber <= 1}
+                  size="sm"
+                  onClick={() => setScale(prev => Math.max(0.5, prev - 0.1))}
                 >
-                  Anterior
+                  Zoom -
                 </Button>
-                <span className="text-sm">
-                  Página {pageNumber} de {numPages}
-                </span>
+                <span className="text-sm px-2">{Math.round(scale * 100)}%</span>
                 <Button 
                   variant="outline" 
-                  onClick={() => setPageNumber(Math.min(numPages, pageNumber + 1))}
-                  disabled={pageNumber >= numPages}
+                  size="sm"
+                  onClick={() => setScale(prev => Math.min(2, prev + 0.1))}
                 >
-                  Siguiente
+                  Zoom +
                 </Button>
               </div>
-            )}
+              
+              {numPages && numPages > 1 && (
+                <div className="flex items-center space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}
+                    disabled={pageNumber <= 1}
+                  >
+                    ←
+                  </Button>
+                  <span className="text-sm px-2">
+                    {pageNumber} / {numPages}
+                  </span>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setPageNumber(Math.min(numPages, pageNumber + 1))}
+                    disabled={pageNumber >= numPages}
+                  >
+                    →
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <div className="border rounded-lg overflow-auto max-h-[60vh] bg-gray-50 p-4">
+              <Document
+                file={document.url}
+                onLoadSuccess={onDocumentLoadSuccess}
+                className="flex justify-center"
+                loading={<div className="p-4">Cargando PDF...</div>}
+                error={<div className="p-4 text-red-600">Error al cargar el PDF</div>}
+              >
+                <Page 
+                  pageNumber={pageNumber} 
+                  scale={scale}
+                  renderTextLayer={true}
+                  renderAnnotationLayer={true}
+                  className="shadow-lg"
+                />
+              </Document>
+            </div>
           </div>
         );
 
@@ -160,7 +189,7 @@ const DocumentViewer = ({ isOpen, onClose, document }: DocumentViewerProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-5xl max-h-[95vh] overflow-hidden">
         <DialogHeader>
           <div className="flex items-center space-x-3">
             <FileIcon className="w-6 h-6 text-primary" />
@@ -173,7 +202,7 @@ const DocumentViewer = ({ isOpen, onClose, document }: DocumentViewerProps) => {
           </div>
         </DialogHeader>
         
-        <div className="overflow-y-auto max-h-[70vh]">
+        <div className="overflow-y-auto">
           {renderDocumentContent()}
         </div>
         

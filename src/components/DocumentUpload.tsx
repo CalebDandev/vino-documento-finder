@@ -1,5 +1,6 @@
+
 import { useState, useCallback } from "react";
-import { Upload, X, FileText, FileSpreadsheet, File, CheckCircle, AlertCircle } from "lucide-react";
+import { Upload, X, FileText, FileSpreadsheet, File, CheckCircle, AlertCircle, Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -53,11 +54,57 @@ const DocumentUpload = ({ isOpen, onClose, onFilesUploaded }: DocumentUploadProp
     e.preventDefault();
     setIsDragOver(false);
     
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    addFiles(droppedFiles);
+    const items = Array.from(e.dataTransfer.items);
+    processDroppedItems(items);
   }, []);
 
+  const processDroppedItems = async (items: DataTransferItem[]) => {
+    const allFiles: File[] = [];
+    
+    for (const item of items) {
+      if (item.kind === 'file') {
+        const entry = item.webkitGetAsEntry();
+        if (entry) {
+          const files = await processEntry(entry);
+          allFiles.push(...files);
+        }
+      }
+    }
+    
+    if (allFiles.length > 0) {
+      addFiles(allFiles);
+    }
+  };
+
+  const processEntry = async (entry: FileSystemEntry): Promise<File[]> => {
+    const files: File[] = [];
+    
+    if (entry.isFile) {
+      const file = await new Promise<File>((resolve) => {
+        (entry as FileSystemFileEntry).file(resolve);
+      });
+      files.push(file);
+    } else if (entry.isDirectory) {
+      const dirReader = (entry as FileSystemDirectoryEntry).createReader();
+      const entries = await new Promise<FileSystemEntry[]>((resolve) => {
+        dirReader.readEntries(resolve);
+      });
+      
+      for (const subEntry of entries) {
+        const subFiles = await processEntry(subEntry);
+        files.push(...subFiles);
+      }
+    }
+    
+    return files;
+  };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(e.target.files || []);
+    addFiles(selectedFiles);
+  };
+
+  const handleFolderSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
     addFiles(selectedFiles);
   };
@@ -91,6 +138,13 @@ const DocumentUpload = ({ isOpen, onClose, onFilesUploaded }: DocumentUploadProp
     }));
 
     setFiles(prev => [...prev, ...uploadFiles]);
+
+    if (validFiles.length > 0) {
+      toast({
+        title: "Archivos agregados",
+        description: `Se agregaron ${validFiles.length} archivo(s) para subir.`,
+      });
+    }
   };
 
   const removeFile = (id: string) => {
@@ -177,7 +231,7 @@ const DocumentUpload = ({ isOpen, onClose, onFilesUploaded }: DocumentUploadProp
               <Upload className="w-12 h-12 text-primary mx-auto" />
               <div>
                 <h3 className="text-lg font-medium text-primary">
-                  Arrastra archivos aquí o selecciona
+                  Arrastra archivos o carpetas aquí
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
                   Archivos permitidos: Word (.docx), Excel (.xlsx), PDF (.pdf), Texto (.txt)
@@ -187,17 +241,34 @@ const DocumentUpload = ({ isOpen, onClose, onFilesUploaded }: DocumentUploadProp
                 </p>
               </div>
               
-              <div className="relative">
-                <input
-                  type="file"
-                  multiple
-                  accept=".docx,.xlsx,.txt,.pdf"
-                  onChange={handleFileSelect}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                <Button className="bg-primary hover:bg-wine-medium">
-                  Seleccionar Archivos
-                </Button>
+              <div className="flex justify-center space-x-4">
+                <div className="relative">
+                  <input
+                    type="file"
+                    multiple
+                    accept=".docx,.xlsx,.txt,.pdf"
+                    onChange={handleFileSelect}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <Button className="bg-primary hover:bg-wine-medium">
+                    <FileText className="w-4 h-4 mr-2" />
+                    Seleccionar Archivos
+                  </Button>
+                </div>
+                
+                <div className="relative">
+                  <input
+                    type="file"
+                    webkitdirectory=""
+                    multiple
+                    onChange={handleFolderSelect}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <Button variant="outline" className="border-primary hover:bg-wine-pale">
+                    <Folder className="w-4 h-4 mr-2" />
+                    Seleccionar Carpeta
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>
