@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { Upload, X, FileText, FileSpreadsheet, File, CheckCircle, AlertCircle, Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+
+// Extend HTMLInputElement to include webkitdirectory
+declare module "react" {
+  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    webkitdirectory?: string;
+  }
+}
 
 interface DocumentUploadProps {
   isOpen: boolean;
