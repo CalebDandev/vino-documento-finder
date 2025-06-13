@@ -112,7 +112,7 @@ const DocumentViewer = ({ isOpen, onClose, document }: DocumentViewerProps) => {
                 </p>
                 <Button className="mt-4" onClick={() => window.open(document.url, '_blank')}>
                   <Download className="w-4 h-4 mr-2" />
-                  Descargar para ver completo
+                  Abrir para ver completo
                 </Button>
               </div>
             </div>
@@ -132,7 +132,7 @@ const DocumentViewer = ({ isOpen, onClose, document }: DocumentViewerProps) => {
                 </p>
                 <Button className="mt-4" onClick={() => window.open(document.url, '_blank')}>
                   <Download className="w-4 h-4 mr-2" />
-                  Descargar para ver completo
+                  Abrir para ver completo
                 </Button>
               </div>
             </div>
@@ -183,7 +183,7 @@ const DocumentViewer = ({ isOpen, onClose, document }: DocumentViewerProps) => {
           </Button>
           <Button onClick={() => window.open(document.url, '_blank')}>
             <Download className="w-4 h-4 mr-2" />
-            Descargar
+            Abrir
           </Button>
         </div>
       </DialogContent>
