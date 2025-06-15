@@ -1,6 +1,5 @@
 
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface SearchHeaderProps {
   onUploadClick: () => void;
@@ -16,17 +15,9 @@ const SearchHeader = ({ onUploadClick }: SearchHeaderProps) => {
               <Search className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-primary">FIISplorer</h1>
-              <p className="text-sm text-muted-foreground">Motor de Búsqueda Académica</p>
+              <h1 className="text-xl font-bold text-primary">Facultad de Ingeniería Industrial, Software y Sistemas</h1>
             </div>
           </div>
-          
-          <Button 
-            onClick={onUploadClick}
-            className="bg-primary hover:bg-wine-medium transition-colors duration-200"
-          >
-            Cargar Documentos
-          </Button>
         </div>
       </div>
     </header>
