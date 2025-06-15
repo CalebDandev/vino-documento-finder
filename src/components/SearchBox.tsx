@@ -35,9 +35,6 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
         <h1 className="text-6xl font-light text-primary mb-4 tracking-wide">
           <span className="font-normal">FIIS</span><span className="text-wine-medium">plorer</span>
         </h1>
-        <p className="text-lg text-muted-foreground">
-          La manera más inteligente de encontrar tu documentos, solo escribe, y listo, todo a tu alcance
-        </p>
       </div>
 
       {/* Caja de búsqueda moderna estilo Bing */}
